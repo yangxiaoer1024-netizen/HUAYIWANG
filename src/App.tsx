@@ -122,7 +122,7 @@ const SubNav = ({ active, onSelect }: { active: string, onSelect: (val: string) 
   
   return (
     <div className="sticky top-[87px] bg-white z-40 overflow-hidden border-b border-gray-50/50">
-      <div className="flex gap-6 px-4 overflow-x-auto no-scrollbar pt-2 pb-0">
+      <div className="flex gap-6 px-4 overflow-x-auto no-scrollbar pt-0.5 pb-0">
         {items.map((item) => (
           <div 
             key={item} 
@@ -153,13 +153,13 @@ const Categories = ({ onShowAll }: { onShowAll: () => void }) => {
   const tabs = ["肿瘤科", "心血管科", "儿科", "神经科"];
   
   return (
-    <div className="flex items-center bg-white px-4 pt-1 pb-3 gap-2 overflow-hidden border-b border-gray-50">
-      <div className="flex-1 flex gap-4 overflow-x-auto no-scrollbar">
+    <div className="flex items-center justify-between bg-white px-4 mt-0 mb-4">
+      <div className="flex-1 flex gap-4 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         {tabs.map((tab) => (
           <button 
             key={tab} 
             onClick={() => setActive(tab)}
-            className={`px-4 py-1.5 rounded-full text-[13px] whitespace-nowrap transition-colors ${
+            className={`px-4 py-1.5 rounded-full text-[13px] whitespace-nowrap transition-colors flex-shrink-0 ${
               active === tab ? "bg-primary text-white font-bold" : "bg-gray-100 text-gray-600 font-normal hover:bg-gray-200"
             }`}
           >
@@ -167,8 +167,7 @@ const Categories = ({ onShowAll }: { onShowAll: () => void }) => {
           </button>
         ))}
       </div>
-      <div className="flex items-center">
-        <div className="w-[1px] h-4 bg-gray-200 mr-3"></div>
+      <div className="flex items-center ml-3 shrink-0 w-[24px] justify-center">
         <Menu 
           size={20} 
           className="text-gray-400 cursor-pointer active:opacity-60" 
