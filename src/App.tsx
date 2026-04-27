@@ -339,9 +339,9 @@ const GridServices = ({ onNavigate }: { onNavigate: (label: string) => void }) =
 );
 
 // --- Specialized Blocks ---
-const SpecialBlocks = ({ onCalendar }: { onCalendar: () => void }) => (
+const SpecialBlocks = ({ onCalendar, onJobSearch }: { onCalendar: () => void, onJobSearch: () => void }) => (
   <div className="px-4 mt-4 flex gap-3">
-    <div className="flex-1 bg-secondary-bg rounded-xl p-4 flex justify-between items-center h-20">
+    <div className="flex-1 bg-secondary-bg rounded-xl p-4 flex justify-between items-center h-20 cursor-pointer" onClick={onJobSearch}>
       <div>
         <h4 className="text-primary font-bold text-[14px]">找工作</h4>
         <p className="text-[11px] text-gray-500">海量医疗岗位</p>
@@ -880,7 +880,7 @@ const JobListingPage = ({ onBack }: { onBack: () => void }) => {
       </div>
       <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4">
         {jobs.map((job, i) => (
-          <div key={i} className="bg-white p-4 rounded-xl border border-gray-100 active:bg-gray-50 transition-colors shadow-sm">
+          <div key={i} className="bg-white p-4 rounded-xl border border-gray-100 active:bg-gray-50 transition-colors">
             <div className="flex justify-between items-start mb-2">
               <h3 className="text-[16px] font-bold text-gray-900">{job.title}</h3>
               <span className="text-[15px] font-bold text-[#f44336]">{job.salary}</span>
@@ -1271,7 +1271,7 @@ export default function App() {
                 <Categories onShowAll={() => setShowDepartments(true)} />
                 <HeroBanner onClick={() => setShowDetail(true)} />
                 <GridServices onNavigate={handleNavigate} />
-                <SpecialBlocks onCalendar={() => setShowCalendar(true)} />
+                <SpecialBlocks onCalendar={() => setShowCalendar(true)} onJobSearch={() => handleNavigate("找工作")} />
                 <RecommendedCourses onCourse={() => setShowVideoPlayer(true)} />
               </motion.div>
             </AnimatePresence>
