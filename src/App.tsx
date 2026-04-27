@@ -147,7 +147,6 @@ const SubNav = ({ active, onSelect }: { active: string, onSelect: (val: string) 
   );
 };
 
-// --- Page Components ---
 const ScanPage = ({ onClose }: { onClose: () => void }) => (
   <motion.div
     initial={{ opacity: 0 }}
@@ -182,6 +181,44 @@ const ScanPage = ({ onClose }: { onClose: () => void }) => (
     </div>
   </motion.div>
 );
+
+const SearchPage = ({ onClose }: { onClose: () => void }) => {
+  const [query, setQuery] = useState("");
+  return (
+    <motion.div
+      initial={{ x: "100%" }}
+      animate={{ x: 0 }}
+      exit={{ x: "100%" }}
+      className="absolute inset-0 bg-white z-[100] flex flex-col"
+    >
+      <div className="pt-[44px] px-4 pb-3 flex items-center border-b border-gray-100 gap-3">
+        <button onClick={onClose} className="p-1 -ml-1">
+          <ChevronLeft size={24} />
+        </button>
+        <div className="flex-1 bg-gray-100 rounded-full flex items-center px-3 py-2">
+          <Search size={18} className="text-gray-400" />
+          <input 
+            type="text" 
+            placeholder="搜索..." 
+            className="bg-transparent border-none outline-none flex-1 ml-2 text-[15px]"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
+      </div>
+      <div className="p-4">
+        <h3 className="text-sm font-bold text-gray-900 mb-3">搜索历史</h3>
+        <div className="flex flex-wrap gap-2">
+          {["传染病防治法", "心血管", "儿科专家", "最新研讨会"].map(tag => (
+            <span key={tag} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs">
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const DetailPage = ({ onClose }: { onClose: () => void }) => (
   <motion.div
@@ -1071,7 +1108,7 @@ const GenericSubPage = ({
 };
 
 // --- Profile Page ---
-const ProfilePage = ({ onNavigate }: { onNavigate: (label: string) => void }) => {
+const ProfilePage = ({ onNavigate, onScan, onSearch }: { onNavigate: (label: string) => void, onScan: () => void, onSearch: () => void }) => {
   const menuItems = [
     { icon: ShieldCheck, label: "人脸建档" },
     { icon: ClipboardList, label: "考勤记录" },
@@ -1088,8 +1125,8 @@ const ProfilePage = ({ onNavigate }: { onNavigate: (label: string) => void }) =>
       <div className="pt-[44px] px-4 pb-4 flex items-center justify-between">
         <h2 className="text-[22px] font-bold text-gray-900">我的</h2>
         <div className="flex items-center gap-4">
-          <Search size={22} className="text-gray-900" />
-          <Scan size={22} className="text-gray-900" />
+          <Search size={22} className="text-gray-900 cursor-pointer" onClick={onSearch} />
+          <Scan size={22} className="text-gray-900 cursor-pointer" onClick={onScan} />
         </div>
       </div>
 
@@ -1124,7 +1161,7 @@ const ProfilePage = ({ onNavigate }: { onNavigate: (label: string) => void }) =>
         </div>
 
         {/* Stats Section */}
-        <div className="grid grid-cols-4 gap-2 px-5 mt-6 mb-6">
+        <div className="grid grid-cols-4 gap-2 px-5 mt-3 mb-3">
           {[
             { label: "我的收藏", value: "96" },
             { label: "积分任务", value: "288" },
@@ -1143,15 +1180,15 @@ const ProfilePage = ({ onNavigate }: { onNavigate: (label: string) => void }) =>
         </div>
 
         {/* Menu List */}
-        <div className="border-t border-gray-50 pt-2">
+        <div>
           {menuItems.map((item, i) => (
             <div 
               key={i} 
               onClick={() => onNavigate(item.label)}
-              className="flex items-center gap-4 py-4.5 px-5 group active:bg-gray-50 transition-colors cursor-pointer"
+              className="flex items-center gap-4 py-3.5 px-5 group active:bg-gray-50 transition-colors cursor-pointer border-b border-gray-50"
             >
               <div className="text-gray-900">
-                <item.icon size={22} strokeWidth={2} />
+                <item.icon size={20} strokeWidth={2} />
               </div>
               <span className="flex-1 text-[15px] text-gray-900 font-medium">{item.label}</span>
               <ChevronRight size={18} className="text-gray-300 group-active:text-gray-500" />
@@ -1201,6 +1238,8 @@ export default function App() {
   const [activeSubTab, setActiveSubTab] = useState("推荐");
   const [showDepartments, setShowDepartments] = useState(false);
   const [showScan, setShowScan] = useState(false);
+  const [showProfileScan, setShowProfileScan] = useState(false);
+  const [showProfileSearch, setShowProfileSearch] = useState(false);
   const [showDetail, setShowDetail] = useState(false);
   const [showCalendar, setShowCalendar] = useState(false);
   const [showVideoPlayer, setShowVideoPlayer] = useState(false);
@@ -1291,7 +1330,15 @@ export default function App() {
             transition={{ duration: 0.2 }}
             className="phone-content bg-white"
           >
-            <ProfilePage onNavigate={handleNavigate} />
+            <ProfilePage 
+              onNavigate={handleNavigate} 
+              onScan={() => setShowProfileScan(true)}
+              onSearch={() => setShowProfileSearch(true)}
+            />
+            <AnimatePresence>
+              {showProfileScan && <ScanPage onClose={() => setShowProfileScan(false)} />}
+              {showProfileSearch && <SearchPage onClose={() => setShowProfileSearch(false)} />}
+            </AnimatePresence>
           </motion.div>
         ) : currentPage === "live" ? (
           <motion.div 
