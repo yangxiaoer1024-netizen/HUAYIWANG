@@ -93,7 +93,7 @@ const HomeIndicator = () => (
 );
 
 // --- Header Component ---
-const Header = () => (
+const Header = ({ onScan, onMessages }: { onScan: () => void, onMessages: () => void }) => (
   <div className="sticky top-0 bg-white z-50 pt-[44px] px-4 pb-3 flex items-center gap-3 border-b border-gray-50">
     <h1 className="text-[20px] font-bold text-gray-900 whitespace-nowrap">首页</h1>
     <div className="flex-1 relative">
@@ -107,8 +107,8 @@ const Header = () => (
       </div>
     </div>
     <div className="flex items-center gap-3">
-      <Scan size={22} className="text-gray-700" />
-      <div className="relative">
+      <Scan size={22} className="text-gray-700 cursor-pointer" onClick={onScan} />
+      <div className="relative cursor-pointer" onClick={onMessages}>
         <Bell size={22} className="text-gray-700" />
         <div className="absolute top-0 right-0 w-[11px] h-[11px] bg-red-500 rounded-full border-2 border-white" />
       </div>
@@ -147,6 +147,112 @@ const SubNav = ({ active, onSelect }: { active: string, onSelect: (val: string) 
   );
 };
 
+// --- Page Components ---
+const ScanPage = ({ onClose }: { onClose: () => void }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    className="absolute inset-0 bg-black z-[100] flex flex-col items-center"
+  >
+    <div className="w-full pt-[44px] px-4 pb-4 flex items-center justify-between z-10 text-white">
+      <button onClick={onClose} className="p-2">
+        <X size={24} />
+      </button>
+      <span className="text-[17px] font-bold">扫一扫</span>
+      <button className="p-2">
+        <MoreHorizontal size={24} />
+      </button>
+    </div>
+    <div className="flex-1 w-full flex flex-col items-center justify-center p-8">
+      <div className="w-64 h-64 border-2 border-white/50 rounded-2xl relative">
+        <div className="absolute -top-[1px] -left-[1px] w-8 h-8 border-t-4 border-l-4 border-primary" />
+        <div className="absolute -top-[1px] -right-[1px] w-8 h-8 border-t-4 border-r-4 border-primary" />
+        <div className="absolute -bottom-[1px] -left-[1px] w-8 h-8 border-b-4 border-l-4 border-primary" />
+        <div className="absolute -bottom-[1px] -right-[1px] w-8 h-8 border-b-4 border-r-4 border-primary" />
+        
+        {/* Scanner line animation */}
+        <motion.div
+          animate={{ y: [0, 256, 0] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+          className="w-full h-[2px] bg-primary absolute top-0"
+        />
+      </div>
+      <p className="text-white text-[15px] mt-8 text-center opacity-80">将二维码/条形码放入框内，即可自动扫描</p>
+    </div>
+  </motion.div>
+);
+
+const DetailPage = ({ onClose }: { onClose: () => void }) => (
+  <motion.div
+    initial={{ x: "100%" }}
+    animate={{ x: 0 }}
+    exit={{ x: "100%" }}
+    className="absolute inset-0 bg-white z-[100] flex flex-col"
+  >
+    <div className="pt-[44px] px-4 pb-3 flex items-center border-b border-gray-100">
+      <button onClick={onClose} className="p-1 -ml-1">
+        <ChevronLeft size={24} />
+      </button>
+      <h2 className="text-[17px] font-bold ml-2">政策解读</h2>
+    </div>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">传染病防治法 (2025版) 解读</h1>
+      <p className="text-gray-600">这是关于2025版传染病防治法的详细解读内容...</p>
+    </div>
+  </motion.div>
+);
+
+const CalendarPage = ({ onClose }: { onClose: () => void }) => (
+  <motion.div
+    initial={{ x: "100%" }}
+    animate={{ x: 0 }}
+    exit={{ x: "100%" }}
+    className="absolute inset-0 bg-white z-[100] flex flex-col"
+  >
+    <div className="pt-[44px] px-4 pb-3 flex items-center border-b border-gray-100">
+      <button onClick={onClose} className="p-1 -ml-1">
+        <ChevronLeft size={24} />
+      </button>
+      <h2 className="text-[17px] font-bold ml-2">日历安排</h2>
+    </div>
+    <div className="p-4">
+      <div className="bg-gray-100 p-8 rounded-2xl text-center">
+        <p className="text-gray-500">这里显示日历盘</p>
+      </div>
+      <div className="mt-4 space-y-2">
+        <div className="bg-white border p-4 rounded-xl">今日无安排</div>
+        <div className="bg-white border p-4 rounded-xl">明日有会诊</div>
+      </div>
+    </div>
+  </motion.div>
+);
+
+const VideoPlayerPage = ({ onClose }: { onClose: () => void }) => (
+  <motion.div
+    initial={{ x: "100%" }}
+    animate={{ x: 0 }}
+    exit={{ x: "100%" }}
+    className="absolute inset-0 bg-black z-[100] flex flex-col"
+  >
+    <div className="pt-[44px] px-4 pb-3 flex items-center z-10 text-white">
+      <button onClick={onClose} className="p-1 -ml-1">
+        <ChevronLeft size={24} />
+      </button>
+      <h2 className="text-[17px] font-bold ml-2">课程视频</h2>
+    </div>
+    <div className="flex-1 flex items-center justify-center bg-black">
+      <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center">
+        <Play size={32} className="text-white ml-2" fill="currentColor" />
+      </div>
+    </div>
+    <div className="p-4 text-white">
+      <h1 className="text-lg font-bold mb-2">传染病防治法解析</h1>
+      <p className="text-sm opacity-70">课程描述...</p>
+    </div>
+  </motion.div>
+);
+
 // --- Category Tabs ---
 const Categories = ({ onShowAll }: { onShowAll: () => void }) => {
   const [active, setActive] = useState<string | null>(null);
@@ -179,8 +285,8 @@ const Categories = ({ onShowAll }: { onShowAll: () => void }) => {
 };
 
 // --- Hero Banner ---
-const HeroBanner = () => (
-  <div className="px-4 mt-2">
+const HeroBanner = ({ onClick }: { onClick: () => void }) => (
+  <div className="px-4 mt-2 cursor-pointer" onClick={onClick}>
     <div className="bg-primary rounded-2xl p-4 relative overflow-hidden">
       {/* Decorative circle */}
       <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-6" />
@@ -233,7 +339,7 @@ const GridServices = ({ onNavigate }: { onNavigate: (label: string) => void }) =
 );
 
 // --- Specialized Blocks ---
-const SpecialBlocks = () => (
+const SpecialBlocks = ({ onCalendar }: { onCalendar: () => void }) => (
   <div className="px-4 mt-4 flex gap-3">
     <div className="flex-1 bg-secondary-bg rounded-xl p-4 flex justify-between items-center h-20">
       <div>
@@ -242,7 +348,7 @@ const SpecialBlocks = () => (
       </div>
       <Briefcase size={28} className="text-primary opacity-60" strokeWidth={2.5} />
     </div>
-    <div className="flex-1 bg-blue-bg rounded-xl p-4 flex justify-between items-center h-20">
+    <div className="flex-1 bg-blue-bg rounded-xl p-4 flex justify-between items-center h-20 cursor-pointer" onClick={onCalendar}>
       <div>
         <h4 className="text-[#3b82f6] font-bold text-[14px]">日历</h4>
         <p className="text-[11px] text-[#3b82f6] opacity-70">查看安排</p>
@@ -253,8 +359,8 @@ const SpecialBlocks = () => (
 );
 
 // --- Recommended Courses ---
-const CourseItem = () => (
-  <div className="flex gap-4 p-3 bg-white hover:bg-gray-50 transition-colors">
+const CourseItem = ({ onClick }: { onClick: () => void }) => (
+  <div className="flex gap-4 p-3 bg-white hover:bg-gray-50 transition-colors cursor-pointer" onClick={onClick}>
     <div className="w-[124px] h-[70px] bg-gray-100 rounded-lg flex items-center justify-center shrink-0 relative">
       <div className="w-8 h-8 rounded-full bg-white/60 flex items-center justify-center text-gray-600">
         <Play size={16} fill="currentColor" className="ml-0.5" />
@@ -269,14 +375,14 @@ const CourseItem = () => (
   </div>
 );
 
-const RecommendedCourses = () => (
+const RecommendedCourses = ({ onCourse }: { onCourse: () => void }) => (
   <div className="mt-4 px-4 pb-28">
     <h3 className="text-[18px] font-bold text-gray-900 mb-2">推荐课程</h3>
     <div className="space-y-1 -mx-4">
-      <CourseItem />
-      <CourseItem />
-      <CourseItem />
-      <CourseItem />
+      <CourseItem onClick={onCourse} />
+      <CourseItem onClick={onCourse} />
+      <CourseItem onClick={onCourse} />
+      <CourseItem onClick={onCourse} />
     </div>
   </div>
 );
@@ -1094,6 +1200,10 @@ export default function App() {
   const [activeTab, setActiveTab ] = useState("首页");
   const [activeSubTab, setActiveSubTab] = useState("推荐");
   const [showDepartments, setShowDepartments] = useState(false);
+  const [showScan, setShowScan] = useState(false);
+  const [showDetail, setShowDetail] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+  const [showVideoPlayer, setShowVideoPlayer] = useState(false);
   const [selectedChat, setSelectedChat] = useState<any>(null);
 
   const departments = [
@@ -1142,7 +1252,13 @@ export default function App() {
             transition={{ duration: 0.2 }}
             className="phone-content bg-white scroll-smooth pb-[100px]"
           >
-            <Header />
+            <Header 
+              onScan={() => setShowScan(true)} 
+              onMessages={() => {
+                setActiveTab("消息");
+                setCurrentPage("messages");
+              }}
+            />
             <SubNav active={activeSubTab} onSelect={setActiveSubTab} />
             <AnimatePresence mode="popLayout">
               <motion.div
@@ -1153,11 +1269,17 @@ export default function App() {
                 transition={{ duration: 0.2 }}
               >
                 <Categories onShowAll={() => setShowDepartments(true)} />
-                <HeroBanner />
+                <HeroBanner onClick={() => setShowDetail(true)} />
                 <GridServices onNavigate={handleNavigate} />
-                <SpecialBlocks />
-                <RecommendedCourses />
+                <SpecialBlocks onCalendar={() => setShowCalendar(true)} />
+                <RecommendedCourses onCourse={() => setShowVideoPlayer(true)} />
               </motion.div>
+            </AnimatePresence>
+            <AnimatePresence>
+              {showScan && <ScanPage onClose={() => setShowScan(false)} />}
+              {showDetail && <DetailPage onClose={() => setShowDetail(false)} />}
+              {showCalendar && <CalendarPage onClose={() => setShowCalendar(false)} />}
+              {showVideoPlayer && <VideoPlayerPage onClose={() => setShowVideoPlayer(false)} />}
             </AnimatePresence>
           </motion.div>
         ) : currentPage === "profile" ? (
