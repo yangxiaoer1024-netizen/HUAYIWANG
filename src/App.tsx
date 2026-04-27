@@ -437,8 +437,6 @@ const CountingNumber = ({ value }: { value: number }) => {
   );
 };
 
-import { supabase } from './lib/supabaseClient';
-import { LucideIcon } from 'lucide-react';
 // --- Points Mission Page ---
 const PointsMission = ({ onBack }: { onBack: () => void }) => {
   const [completedMissions, setCompletedMissions] = useState<number[]>([]);
@@ -446,33 +444,19 @@ const PointsMission = ({ onBack }: { onBack: () => void }) => {
   const [showShareDrawer, setShowShareDrawer] = useState(false);
   const [pointsTotal, setPointsTotal] = useState(288);
   const [toast, setToast] = useState<{ show: boolean, points: string }>({ show: false, points: "" });
-  const [missions, setMissions] = useState<any[]>([]);
 
-  const iconMap: { [key: string]: LucideIcon } = {
-    Play, BookText, SquareCheck, Cpu, FileText, GraduationCap, Share2, Search, CheckSquare
-  };
-
-  useEffect(() => {
-    async function fetchTasks() {
-      console.log('Fetching tasks from Supabase...');
-      const { data, error } = await supabase.from('tasks').select('*');
-      if (error) {
-        console.error('Error fetching tasks:', error);
-      } else {
-        console.log('Fetched tasks:', data);
-        setMissions(data || []);
-      }
-    }
-    fetchTasks();
-
-    const channel = supabase.channel('tasks').on('postgres_changes', { event: '*', schema: 'public', table: 'tasks' }, (payload) => {
-      fetchTasks();
-    }).subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, []);
+  const missions = [
+    { icon: Play, title: "看医疗科普视频赚医豆", points: "50" },
+    { icon: BookText, title: "浏览传染病防治指南", points: "20" },
+    { icon: SquareCheck, title: "每日科室管理签到", points: "10" },
+    { icon: Cpu, title: "使用华医AI进行临床查询", points: "30" },
+    { icon: FileText, title: "完善个人职称信息", points: "50" },
+    { icon: GraduationCap, title: "完成一节继续教育课程", points: "100" },
+    { icon: Share2, title: "向同事推荐学术资源", points: "20" },
+    { icon: Search, title: "参与医生职业发展调研", points: "40" },
+    { icon: CheckSquare, title: "完成科室安全知识测试", points: "60" },
+    { icon: Search, title: "搜索并收藏一个新岗位", points: "20" },
+  ];
 
   const handleComplete = (index: number, points: string) => {
     if (!completedMissions.includes(index)) {
@@ -638,31 +622,28 @@ const PointsMission = ({ onBack }: { onBack: () => void }) => {
             <span className="text-gray-400 text-[12px] font-normal">完成今日任务赚更多医豆</span>
           </div>
           <div className="flex flex-col">
-            {missions.map((mission, i) => {
-              const IconComponent = iconMap[mission.icon_name] || Search;
-              return (
-                <div key={mission.id || i} className="flex items-center gap-3 py-4 border-b border-gray-50 group hover:bg-gray-50 transition-colors -mx-4 px-4">
-                  <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-600 shrink-0">
-                    <IconComponent size={20} strokeWidth={2.0} />
-                  </div>
-                  <div className="flex-1">
-                    <h4 className="text-[14px] font-bold text-gray-900 leading-tight">{mission.title}</h4>
-                    <p className="text-[12px] text-gray-500 mt-1">已获得 {mission.points} 医豆</p>
-                  </div>
-                  <button 
-                    onClick={() => handleComplete(i, mission.points)}
-                    disabled={completedMissions.includes(i)}
-                    className={`px-4 py-1.5 rounded-full text-[13px] font-medium transition-all shrink-0 active:scale-95 ${
-                      completedMissions.includes(i) 
-                      ? "bg-gray-100 text-gray-400 cursor-default" 
-                      : "bg-primary text-white hover:opacity-90"
-                    }`}
-                  >
-                    {completedMissions.includes(i) ? "已完成" : "去完成"}
-                  </button>
+            {missions.map((mission, i) => (
+              <div key={i} className="flex items-center gap-3 py-4 border-b border-gray-50 group hover:bg-gray-50 transition-colors -mx-4 px-4">
+                <div className="w-10 h-10 rounded-lg bg-gray-50 flex items-center justify-center text-gray-600 shrink-0">
+                  <mission.icon size={20} strokeWidth={2.0} />
                 </div>
-              );
-            })}
+                <div className="flex-1">
+                  <h4 className="text-[14px] font-bold text-gray-900 leading-tight">{mission.title}</h4>
+                  <p className="text-[12px] text-gray-500 mt-1">已获得 {mission.points} 医豆</p>
+                </div>
+                <button 
+                  onClick={() => handleComplete(i, mission.points)}
+                  disabled={completedMissions.includes(i)}
+                  className={`px-4 py-1.5 rounded-full text-[13px] font-medium transition-all shrink-0 active:scale-95 ${
+                    completedMissions.includes(i) 
+                    ? "bg-gray-100 text-gray-400 cursor-default" 
+                    : "bg-primary text-white hover:opacity-90"
+                  }`}
+                >
+                  {completedMissions.includes(i) ? "已完成" : "去完成"}
+                </button>
+              </div>
+            ))}
           </div>
         </div>
       </div>
